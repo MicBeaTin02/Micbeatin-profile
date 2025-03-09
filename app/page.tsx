@@ -4,6 +4,7 @@ import { useState, useRef, MouseEvent } from "react";
 import { FaGithub, FaLinkedin, FaTwitter, FaInstagram, FaSun, FaMoon } from 'react-icons/fa';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
+import emailjs from 'emailjs-com';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement);
 
@@ -112,25 +113,16 @@ export default function Home() {
       setTimeout(() => {
         setMessages((prevMessages) => [...prevMessages, "This is an automatic response from AI."]);
       }, 1000);
-  
-      // Send email
-      fetch('/api/send-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          to: 'ebora.gilax@gmail.com',
-          subject: 'New AI Message',
-          text: inputMessage,
-        }),
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Success:', data);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
+
+      // Send email using EmailJS
+      emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', {
+        to_email: 'ebora.gilax@gmail.com',
+        message: inputMessage,
+      }, 'YOUR_USER_ID')
+      .then((response) => {
+        console.log('SUCCESS!', response.status, response.text);
+      }, (error) => {
+        console.error('FAILED...', error);
       });
     }
   };
